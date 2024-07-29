@@ -3,15 +3,136 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
+// User model
 model User {
-  id           String   @id @default(uuid())
-  name         String
-  email        String   @unique
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  email        String @unique
   hashPassword String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+
+  // Relations
+  AboutMe AboutMe?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// AboutMe model
+model AboutMe {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  nickname    String
+  position    String
+  welcomeText String
+  image       String?
+  content     String
+
+  // Relations
+  user         User           @relation(fields: [userId], references: [id])
+  userId       String         @unique @db.ObjectId
+  PersonalInfo PersonalInfo[]
+  Education    Education[]
+  Experience   Experience[]
+  Skill        Skill[]
+  Project      Project[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// PersonalInfo model
+model PersonalInfo {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  icon        String?
+
+  // Relations
+  aboutMe   AboutMe @relation(fields: [aboutMeId], references: [id])
+  aboutMeId String  @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Education model
+model Education {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  school      String
+  description String
+  location    String
+  startDate   DateTime
+  endDate     DateTime
+
+  // Relations
+  aboutMe   AboutMe @relation(fields: [aboutMeId], references: [id])
+  aboutMeId String  @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Experience model
+model Experience {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  position  String
+  company   String
+  location  String
+  startDate DateTime
+  endDate   DateTime
+
+  // Relations
+  ExperienceDescription ExperienceDescription[]
+  aboutMe               AboutMe                 @relation(fields: [aboutMeId], references: [id])
+  aboutMeId             String                  @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ExperienceDescription model
+model ExperienceDescription {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+
+  // Relations
+  experience   Experience @relation(fields: [experienceId], references: [id])
+  experienceId String     @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Skill model
+model Skill {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  image String?
+
+  // Relations
+  user      AboutMe @relation(fields: [aboutMeId], references: [id])
+  aboutMeId String  @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Project model
+model Project {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  image       String?
+  description String
+  link_github String
+  link_demo   String
+
+  // Relations
+  user      AboutMe @relation(fields: [aboutMeId], references: [id])
+  aboutMeId String  @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
