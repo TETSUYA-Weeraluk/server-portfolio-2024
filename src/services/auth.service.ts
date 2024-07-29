@@ -2,9 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import { comparePassword, hashPassword } from "../utils/auth.utrils";
 import { generateToken } from "../utils/jwt.utils";
 import { RegisterType } from "../models/auth.model";
-import bcrypt from "bcrypt";
-
-const saltRounds = process.env.SALT_ROUNDS as string;
 
 const prisma = new PrismaClient();
 

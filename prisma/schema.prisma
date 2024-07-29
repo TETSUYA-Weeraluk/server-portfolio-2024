@@ -29,9 +29,10 @@ model AboutMe {
   welcomeText String
   image       String?
   content     String
+  imageAboutMe    String?
 
   // Relations
-  user         User           @relation(fields: [userId], references: [id])
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String         @unique @db.ObjectId
   PersonalInfo PersonalInfo[]
   Education    Education[]
@@ -43,15 +44,21 @@ model AboutMe {
   updatedAt DateTime @updatedAt
 }
 
+enum LibraryIcon {
+  Fa
+  Md
+}
+
 // PersonalInfo model
 model PersonalInfo {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
-  icon        String?
+  libraryIcon LibraryIcon
+  icon        String
 
   // Relations
-  aboutMe   AboutMe @relation(fields: [aboutMeId], references: [id])
+  aboutMe   AboutMe @relation(fields: [aboutMeId], references: [id], onDelete: Cascade)
   aboutMeId String  @db.ObjectId
 
   createdAt DateTime @default(now())
@@ -68,7 +75,7 @@ model Education {
   endDate     DateTime
 
   // Relations
-  aboutMe   AboutMe @relation(fields: [aboutMeId], references: [id])
+  aboutMe   AboutMe @relation(fields: [aboutMeId], references: [id], onDelete: Cascade)
   aboutMeId String  @db.ObjectId
 
   createdAt DateTime @default(now())
@@ -80,13 +87,12 @@ model Experience {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   position  String
   company   String
-  location  String
   startDate DateTime
   endDate   DateTime
 
   // Relations
   ExperienceDescription ExperienceDescription[]
-  aboutMe               AboutMe                 @relation(fields: [aboutMeId], references: [id])
+  aboutMe               AboutMe                 @relation(fields: [aboutMeId], references: [id], onDelete: Cascade)
   aboutMeId             String                  @db.ObjectId
 
   createdAt DateTime @default(now())
@@ -99,7 +105,7 @@ model ExperienceDescription {
   description String
 
   // Relations
-  experience   Experience @relation(fields: [experienceId], references: [id])
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
   experienceId String     @db.ObjectId
 
   createdAt DateTime @default(now())
@@ -108,13 +114,26 @@ model ExperienceDescription {
 
 // Skill model
 model Skill {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String
-  image String?
 
   // Relations
-  user      AboutMe @relation(fields: [aboutMeId], references: [id])
-  aboutMeId String  @db.ObjectId
+  aboutme          AboutMe            @relation(fields: [aboutMeId], references: [id], onDelete: Cascade)
+  aboutMeId        String             @db.ObjectId
+  skillDescription SkillDescription[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SkillDescription {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  image       String?
+
+  // Relations
+  skill   Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  skillId String @db.ObjectId
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -130,7 +149,7 @@ model Project {
   link_demo   String
 
   // Relations
-  user      AboutMe @relation(fields: [aboutMeId], references: [id])
+  user      AboutMe @relation(fields: [aboutMeId], references: [id], onDelete: Cascade)
   aboutMeId String  @db.ObjectId
 
   createdAt DateTime @default(now())
