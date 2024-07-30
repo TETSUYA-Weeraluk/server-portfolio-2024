@@ -53,18 +53,31 @@ export const getAboutMe = async () => {
             email: true,
           },
         },
-        PersonalInfo: true,
-        Experience: {
+        personalInfo: {
+          select: {
+            title: true,
+            description: true,
+            libraryIcon: true,
+            icon: true,
+          },
+          orderBy: {
+            order: "asc",
+          },
+        },
+        experience: {
           select: {
             id: true,
             company: true,
             startDate: true,
             endDate: true,
             position: true,
-            ExperienceDescription: true,
+            experienceDescription: true,
+          },
+          orderBy: {
+            order: "asc",
           },
         },
-        Education: {
+        education: {
           select: {
             id: true,
             school: true,
@@ -72,8 +85,11 @@ export const getAboutMe = async () => {
             endDate: true,
             description: true,
           },
+          orderBy: {
+            order: "asc",
+          },
         },
-        Skill: {
+        skill: {
           select: {
             title: true,
             skillDescription: {
@@ -81,16 +97,25 @@ export const getAboutMe = async () => {
                 image: true,
                 description: true,
               },
+              orderBy: {
+                order: "asc",
+              },
             },
           },
+          orderBy: {
+            order: "asc",
+          },
         },
-        Project: {
+        project: {
           select: {
             title: true,
             image: true,
             description: true,
             link_github: true,
             link_demo: true,
+          },
+          orderBy: {
+            order: "asc",
           },
         },
       },
@@ -121,11 +146,11 @@ export const getAboutMeById = async (id: string) => {
             email: true,
           },
         },
-        PersonalInfo: true,
-        Experience: true,
-        Education: true,
-        Skill: true,
-        Project: true,
+        personalInfo: true,
+        experience: true,
+        education: true,
+        skill: true,
+        project: true,
       },
     });
 

@@ -6,11 +6,13 @@ export const createPersonalInfoDTO = z.object({
   description: z.string().min(3),
   icon: z.string(),
   libraryIcon: z.enum(["Fa", "Md"]),
+  order: z.number(),
 });
 
 export const createExperienceDescriptionDTO = z.object({
   id: z.string().nullable(),
   description: z.string().min(3),
+  order: z.number(),
 });
 
 export const createExperienceDTO = z.object({
@@ -20,6 +22,7 @@ export const createExperienceDTO = z.object({
   experienceDescription: z.array(createExperienceDescriptionDTO),
   startDate: z.string(),
   endDate: z.string(),
+  order: z.number(),
   removeIdExpDesc: z.array(z.string()),
 });
 
@@ -30,12 +33,14 @@ export const createEducationDTO = z.object({
   location: z.string().min(3).max(255),
   startDate: z.string(),
   endDate: z.string(),
+  order: z.number(),
 });
 
 export const createSkillDescriptionDTO = z.object({
   id: z.string().nullable(),
   description: z.string().min(3),
   image: z.string().nullable(),
+  order: z.number(),
 });
 
 export const createSkillDTO = z.object({
@@ -43,6 +48,7 @@ export const createSkillDTO = z.object({
   title: z.string().min(3).max(255),
   skillDescription: z.array(createSkillDescriptionDTO),
   removeIdSkillDesc: z.array(z.string()),
+  order: z.number(),
 });
 
 export const createProjectDTO = z.object({
@@ -52,6 +58,7 @@ export const createProjectDTO = z.object({
   description: z.string().min(3),
   link_github: z.string(),
   link_demo: z.string(),
+  order: z.number(),
 });
 
 export const createAboutMeDto = z.object({

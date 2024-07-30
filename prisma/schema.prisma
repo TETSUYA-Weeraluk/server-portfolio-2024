@@ -14,7 +14,7 @@ model User {
   hashPassword String
 
   // Relations
-  AboutMe AboutMe?
+  aboutMe AboutMe?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -22,23 +22,23 @@ model User {
 
 // AboutMe model
 model AboutMe {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  nickname    String
-  position    String
-  welcomeText String
-  image       String?
-  content     String
-  imageAboutMe    String?
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  nickname     String
+  position     String
+  welcomeText  String
+  image        String?
+  content      String
+  imageAboutMe String?
 
   // Relations
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String         @unique @db.ObjectId
-  PersonalInfo PersonalInfo[]
-  Education    Education[]
-  Experience   Experience[]
-  Skill        Skill[]
-  Project      Project[]
+  personalInfo PersonalInfo[]
+  education    Education[]
+  experience   Experience[]
+  skill        Skill[]
+  project      Project[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -60,6 +60,7 @@ model PersonalInfo {
   // Relations
   aboutMe   AboutMe @relation(fields: [aboutMeId], references: [id], onDelete: Cascade)
   aboutMeId String  @db.ObjectId
+  order     Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -73,6 +74,7 @@ model Education {
   location    String
   startDate   DateTime
   endDate     DateTime
+  order       Int
 
   // Relations
   aboutMe   AboutMe @relation(fields: [aboutMeId], references: [id], onDelete: Cascade)
@@ -91,9 +93,10 @@ model Experience {
   endDate   DateTime
 
   // Relations
-  ExperienceDescription ExperienceDescription[]
+  experienceDescription ExperienceDescription[]
   aboutMe               AboutMe                 @relation(fields: [aboutMeId], references: [id], onDelete: Cascade)
   aboutMeId             String                  @db.ObjectId
+  order                 Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -121,6 +124,7 @@ model Skill {
   aboutme          AboutMe            @relation(fields: [aboutMeId], references: [id], onDelete: Cascade)
   aboutMeId        String             @db.ObjectId
   skillDescription SkillDescription[]
+  order            Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -134,6 +138,7 @@ model SkillDescription {
   // Relations
   skill   Skill  @relation(fields: [skillId], references: [id], onDelete: Cascade)
   skillId String @db.ObjectId
+  order   Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -151,6 +156,7 @@ model Project {
   // Relations
   user      AboutMe @relation(fields: [aboutMeId], references: [id], onDelete: Cascade)
   aboutMeId String  @db.ObjectId
+  order     Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
