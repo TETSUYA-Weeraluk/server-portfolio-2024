@@ -6,17 +6,19 @@ import { createAboutMeDto } from "../models/aboutMe.model";
 
 const aboutMeRoute = Router();
 
-aboutMeRoute.use(authenticateJWT);
-
 aboutMeRoute
   .route("/")
   .get(aboutMeController.getAboutMe)
-  .post(validate(createAboutMeDto), aboutMeController.createAboutMe);
+  .post(
+    authenticateJWT,
+    validate(createAboutMeDto),
+    aboutMeController.createAboutMe
+  );
 
 aboutMeRoute
   .route("/:id")
-  .get(aboutMeController.getAboutMeById)
-  .patch(aboutMeController.updateAboutMe)
-  .delete(aboutMeController.deleteAboutMe);
+  .get(authenticateJWT, aboutMeController.getAboutMeById)
+  .patch(authenticateJWT, aboutMeController.updateAboutMe)
+  .delete(authenticateJWT, aboutMeController.deleteAboutMe);
 
 export default aboutMeRoute;

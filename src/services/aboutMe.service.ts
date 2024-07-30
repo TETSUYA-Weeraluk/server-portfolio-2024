@@ -54,10 +54,45 @@ export const getAboutMe = async () => {
           },
         },
         PersonalInfo: true,
-        Experience: true,
-        Education: true,
-        Skill: true,
-        Project: true,
+        Experience: {
+          select: {
+            id: true,
+            company: true,
+            startDate: true,
+            endDate: true,
+            position: true,
+            ExperienceDescription: true,
+          },
+        },
+        Education: {
+          select: {
+            id: true,
+            school: true,
+            startDate: true,
+            endDate: true,
+            description: true,
+          },
+        },
+        Skill: {
+          select: {
+            title: true,
+            skillDescription: {
+              select: {
+                image: true,
+                description: true,
+              },
+            },
+          },
+        },
+        Project: {
+          select: {
+            title: true,
+            image: true,
+            description: true,
+            link_github: true,
+            link_demo: true,
+          },
+        },
       },
     });
     return {
@@ -153,6 +188,7 @@ export const updateAboutMe = async (id: string, data: UpdateAboutMeDTO) => {
         welcomeText: data.welcomeText,
         image: data.image,
         content: data.content,
+        imageAboutMe: data.imageAboutMe,
       },
     });
 
