@@ -36,6 +36,11 @@ export const createEducationDTO = z.object({
   order: z.number(),
 });
 
+export const updateEducationDTO = z.object({
+  education: z.array(createEducationDTO),
+  removeIdsEducation: z.array(z.string()),
+});
+
 export const createSkillDescriptionDTO = z.object({
   id: z.string().nullable(),
   description: z.string().min(3),
@@ -109,6 +114,8 @@ export type CreateEducationDTO = z.infer<typeof createEducationDTO>;
 export type CreateSkillDTODescription = z.infer<
   typeof createSkillDescriptionDTO
 >;
+
+export type UpdateEducationDTO = z.infer<typeof updateEducationDTO>;
 export type CreateSkillDTO = z.infer<typeof createSkillDTO>;
 export type CreateProjectDTO = z.infer<typeof createProjectDTO>;
 export type createExperienceDescriptionDTO = z.infer<

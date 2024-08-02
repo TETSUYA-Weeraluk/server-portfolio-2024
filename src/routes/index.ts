@@ -3,6 +3,7 @@ import authRoute from "./auth.route";
 import userRoute from "./users.route";
 import aboutMeRoute from "./aboutMe.route";
 import personalRoute from "./personal.route";
+import educationRoute from "./education.route";
 
 const router = Router();
 
@@ -22,6 +23,10 @@ const listRoute = [
   {
     path: "/personal-info",
     route: personalRoute,
+  },
+  {
+    path: "/education",
+    route: educationRoute,
   },
 ];
 

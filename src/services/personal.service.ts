@@ -41,7 +41,6 @@ export const upsertPersonalInfo = async (
   aboutMeId: string,
   personalInfos: CreatePersonalInfoDTO[]
 ) => {
-  console.log(personalInfos);
   try {
     const personalInfo = await Promise.all(
       personalInfos.map(async (info) => {

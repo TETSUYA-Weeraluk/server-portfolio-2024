@@ -19,6 +19,5 @@ export const validate =
           error: errorMessages,
         });
       }
-      console.log("test");
     }
   };
