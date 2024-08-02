@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import {
   CreateSkillDTO,
   CreateSkillDTODescription,
@@ -6,6 +6,23 @@ import {
 import { omit } from "lodash";
 
 const prisma = new PrismaClient();
+
+export const selectSkill: Prisma.SkillSelect = {
+  id: true,
+  title: true,
+  skillDescription: {
+    select: {
+      id: true,
+      image: true,
+      description: true,
+      order: true,
+    },
+    orderBy: {
+      order: "asc",
+    },
+  },
+  order: true,
+};
 
 export const upsetSkillDescription = async (
   data: CreateSkillDTODescription[],

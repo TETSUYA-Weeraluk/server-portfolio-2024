@@ -91,6 +91,16 @@ export const updateAboutMeDTO = z.object({
   removeIdsPersonalInfo: z.array(z.string()),
 });
 
+export const updateMainContentDTO = z.object({
+  id: z.string(),
+  name: z.string().min(3).max(255),
+  nickname: z.string().min(3).max(255),
+  position: z.string().min(3).max(255),
+  welcomeText: z.string().min(3),
+  image: z.string().nullable(),
+});
+
+export type UpdateMainContentDTO = z.infer<typeof updateMainContentDTO>;
 export type CreateAboutMeDTO = z.infer<typeof createAboutMeDto>;
 export type UpdateAboutMeDTO = z.infer<typeof updateAboutMeDTO>;
 export type CreatePersonalInfoDTO = z.infer<typeof createPersonalInfoDTO>;

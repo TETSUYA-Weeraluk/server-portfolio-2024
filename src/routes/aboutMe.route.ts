@@ -18,7 +18,7 @@ aboutMeRoute
 aboutMeRoute
   .route("/:id")
   .get(authenticateJWT, aboutMeController.getAboutMeById)
-  .patch(authenticateJWT, aboutMeController.updateAboutMe)
+  .patch(aboutMeController.updateAboutMeById)
   .delete(authenticateJWT, aboutMeController.deleteAboutMe);
 
 export default aboutMeRoute;

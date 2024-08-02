@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { omit } from "lodash";
 import {
   createExperienceDescriptionDTO,
@@ -6,6 +6,17 @@ import {
 } from "../models/aboutMe.model";
 
 const prisma = new PrismaClient();
+
+export const selectExperience: Prisma.ExperienceSelect = {
+  id: true,
+  company: true,
+  startDate: true,
+  endDate: true,
+  position: true,
+  experienceDescription: true,
+  order: true,
+};
+
 
 export const upsertExperienceDescription = async (
   experienceId: string,

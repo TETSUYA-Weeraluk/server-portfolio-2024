@@ -1,8 +1,18 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { CreateProjectDTO } from "../models/aboutMe.model";
 import { omit } from "lodash";
 
 const prisma = new PrismaClient();
+
+export const selectProject: Prisma.ProjectSelect = {
+  id: true,
+  title: true,
+  image: true,
+  description: true,
+  link_demo: true,
+  link_github: true,
+  order: true,
+};
 
 export const upsertProject = async (
   aboutMeId: string,

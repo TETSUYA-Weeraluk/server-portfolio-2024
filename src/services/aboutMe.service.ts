@@ -1,14 +1,16 @@
-import { PrismaClient } from "@prisma/client";
-import { CreateAboutMeDTO, UpdateAboutMeDTO } from "../models/aboutMe.model";
-import { upsertSkills } from "./skill.service";
-import { upsertProject } from "./project.service";
-import { upsertPersonalInfo } from "./personal.service";
-import { upsertExperience } from "./experience.service";
-import { upsertEducation } from "./education.service";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { UpdateMainContentDTO } from "../models/aboutMe.model";
+import { omit } from "lodash";
+import { aboutMeBody } from "./aboutMe.interfaces";
+import { selectPersonalInfo } from "./personal.service";
+import { selectExperience } from "./experience.service";
+import { selectSkill } from "./skill.service";
+import { selectEducation } from "./education.service";
+import { selectProject } from "./project.service";
 
 const prisma = new PrismaClient();
 
-export const createAboutMe = async (id: string, data: CreateAboutMeDTO) => {
+export const createAboutMe = async (id: string, data: aboutMeBody) => {
   try {
     const findById = await prisma.aboutMe.findUnique({
       where: {
@@ -16,12 +18,7 @@ export const createAboutMe = async (id: string, data: CreateAboutMeDTO) => {
       },
     });
 
-    if (findById) {
-      return {
-        message: "About me already exists",
-        status: 400,
-      };
-    }
+    // if (findById) return errorSheet()
 
     const aboutMe = await prisma.aboutMe.create({
       data: {
@@ -54,66 +51,31 @@ export const getAboutMe = async () => {
           },
         },
         personalInfo: {
-          select: {
-            title: true,
-            description: true,
-            libraryIcon: true,
-            icon: true,
-          },
+          select: selectPersonalInfo,
           orderBy: {
             order: "asc",
           },
         },
         experience: {
-          select: {
-            id: true,
-            company: true,
-            startDate: true,
-            endDate: true,
-            position: true,
-            experienceDescription: true,
-          },
+          select: selectExperience,
           orderBy: {
             order: "asc",
           },
         },
         education: {
-          select: {
-            id: true,
-            school: true,
-            startDate: true,
-            endDate: true,
-            description: true,
-          },
+          select: selectEducation,
           orderBy: {
             order: "asc",
           },
         },
         skill: {
-          select: {
-            title: true,
-            skillDescription: {
-              select: {
-                image: true,
-                description: true,
-              },
-              orderBy: {
-                order: "asc",
-              },
-            },
-          },
+          select: selectSkill,
           orderBy: {
             order: "asc",
           },
         },
         project: {
-          select: {
-            title: true,
-            image: true,
-            description: true,
-            link_github: true,
-            link_demo: true,
-          },
+          select: selectProject,
           orderBy: {
             order: "asc",
           },
@@ -124,6 +86,44 @@ export const getAboutMe = async () => {
       message: "Successfully retrieved about me",
       data: aboutMe,
       status: 200,
+    };
+  } catch (error) {
+    console.log("error", error);
+    return {
+      message: "Internal Server Error",
+      status: 500,
+    };
+  }
+};
+
+export const updateAboutMeById = async (
+  id: string,
+  data: UpdateMainContentDTO
+) => {
+  try {
+    const user = await prisma.aboutMe.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      return {
+        message: "About me not found",
+        status: 404,
+      };
+    }
+
+    const aboutMe = await prisma.aboutMe.update({
+      where: {
+        id,
+      },
+      data: omit(data, "id"),
+    });
+
+    return {
+      status: 200,
+      data: aboutMe,
     };
   } catch (error) {
     console.log("error", error);
@@ -175,66 +175,11 @@ export const getAboutMeById = async (id: string) => {
   }
 };
 
-export const updateAboutMe = async (id: string, data: UpdateAboutMeDTO) => {
-  try {
-    // Personal Info
-    if (data.PersonalInfo) {
-      await upsertPersonalInfo(id, data.PersonalInfo);
-    }
-
-    // Education
-    if (data.Education) {
-      await upsertEducation(id, data.Education, data.removeIdsEducation);
-    }
-
-    // Experience
-    if (data.Experience) {
-      await upsertExperience(id, data.Experience, data.removeIdsExperience);
-    }
-
-    // Skills
-    if (data.Skill) {
-      await upsertSkills(data.removeIdsSkill, data.Skill, id);
-    }
-
-    // Projects
-    if (data.Project) {
-      await upsertProject(id, data.Project, data.removeIdsProject);
-    }
-
-    await prisma.aboutMe.update({
-      where: {
-        id: id,
-      },
-      data: {
-        name: data.name,
-        nickname: data.nickname,
-        position: data.position,
-        welcomeText: data.welcomeText,
-        image: data.image,
-        content: data.content,
-        imageAboutMe: data.imageAboutMe,
-      },
-    });
-
-    return {
-      message: "Successfully updated Portfolio",
-      status: 200,
-    };
-  } catch (error) {
-    console.log("error", error);
-    return {
-      message: "Internal Server Error",
-      status: 500,
-    };
-  }
-};
-
 export const deleteAboutMe = async (id: string) => {
   try {
     await prisma.aboutMe.delete({
       where: {
-        id: id,
+        id,
       },
     });
 

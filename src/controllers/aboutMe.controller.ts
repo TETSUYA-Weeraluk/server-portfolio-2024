@@ -24,18 +24,26 @@ export const getAboutMeById = async (req: Request, res: Response) => {
   return res.status(aboutMe.status).json(aboutMe);
 };
 
-export const updateAboutMe = async (req: Request, res: Response) => {
-  const id = req.params.id;
+// export const updateAboutMe = async (req: Request, res: Response) => {
+//   const id = req.params.id;
 
-  const aboutMe = await aboutMeService.updateAboutMe(id, req.body);
+//   const aboutMe = await aboutMeService.updateAboutMe(id, req.body);
 
-  return res.status(aboutMe.status).json(aboutMe);
-};
+//   return res.status(aboutMe.status).json(aboutMe);
+// };
 
 export const deleteAboutMe = async (req: Request, res: Response) => {
   const id = req.params.id;
 
   const aboutMe = await aboutMeService.deleteAboutMe(id);
+
+  return res.status(aboutMe.status).json(aboutMe);
+};
+
+export const updateAboutMeById = async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  const aboutMe = await aboutMeService.updateAboutMeById(id, req.body);
 
   return res.status(aboutMe.status).json(aboutMe);
 };

@@ -1,8 +1,18 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { CreateEducationDTO } from "../models/aboutMe.model";
 import { omit } from "lodash";
 
 const prisma = new PrismaClient();
+
+export const selectEducation: Prisma.EducationSelect = {
+  id: true,
+  school: true,
+  description: true,
+  location: true,
+  startDate: true,
+  endDate: true,
+  order: true,
+};
 
 export const upsertEducation = async (
   aboutMeId: string,
