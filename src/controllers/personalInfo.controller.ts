@@ -9,9 +9,8 @@ export const updatePersonalInfoByIdAboutMe = async (
 
   const personalInfo = await personalInfoService.upsertPersonalInfo(
     id,
-    req.body.data
+    req.body
   );
 
-  // return res.send("test");
   return res.status(personalInfo.status).json(personalInfo);
 };

@@ -1,8 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import {
-  CreateEducationDTO,
-  UpdateEducationDTO,
-} from "../models/aboutMe.model";
+import { UpdateEducationDTO } from "../models/aboutMe.model";
 import { omit } from "lodash";
 
 const prisma = new PrismaClient();
@@ -48,13 +45,15 @@ export const upsertEducation = async (
 ) => {
   if (data.removeIdsEducation && data.removeIdsEducation.length > 0) {
     try {
-      await prisma.education.deleteMany({
+      const result = await prisma.education.deleteMany({
         where: {
           id: {
             in: data.removeIdsEducation,
           },
         },
       });
+
+      console.log("result", result);
     } catch (error) {
       console.log("error", error);
     }

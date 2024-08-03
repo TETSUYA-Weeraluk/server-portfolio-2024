@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { CreatePersonalInfoDTO } from "../models/aboutMe.model";
+import { UpdatePersonalDTO } from "../models/aboutMe.model";
 import { omit } from "lodash";
 
 const prisma = new PrismaClient();
@@ -39,8 +39,27 @@ export const selectPersonalInfoByAboutMeId = async (aboutMeId: string) => {
 
 export const upsertPersonalInfo = async (
   aboutMeId: string,
-  personalInfos: CreatePersonalInfoDTO[]
+  data: UpdatePersonalDTO
 ) => {
+  const personalInfos = data.data;
+  const removeIds = data.removeId;
+
+  if (removeIds && removeIds.length > 0) {
+    try {
+      const result = await prisma.personalInfo.deleteMany({
+        where: {
+          id: {
+            in: removeIds,
+          },
+        },
+      });
+
+      console.log("result", result);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   try {
     const personalInfo = await Promise.all(
       personalInfos.map(async (info) => {
