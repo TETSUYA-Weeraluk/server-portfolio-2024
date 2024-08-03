@@ -24,10 +24,47 @@ export const selectSkill: Prisma.SkillSelect = {
   order: true,
 };
 
+export const getSkillsByIdAboutMe = async (idAboutMe: string) => {
+  try {
+    const skill = await prisma.skill.findMany({
+      where: {
+        aboutMeId: idAboutMe,
+      },
+      select: selectSkill,
+      orderBy: {
+        order: "asc",
+      },
+    });
+
+    return skill;
+  } catch (error) {
+    console.log("error", error);
+    return {
+      message: "Internal Server Error",
+      status: 500,
+    };
+  }
+};
+
 export const upsetSkillDescription = async (
   data: CreateSkillDTODescription[],
-  skillId: string
+  skillId: string,
+  removeIds: string[]
 ) => {
+  if (removeIds.length > 0) {
+    try {
+      await prisma.skillDescription.deleteMany({
+        where: {
+          id: {
+            in: removeIds,
+          },
+        },
+      });
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
   await Promise.all(
     data.map(async (skillDescription) => {
       if (skillDescription.id) {
@@ -37,6 +74,8 @@ export const upsetSkillDescription = async (
           },
           data: {
             description: skillDescription.description,
+            order: skillDescription.order,
+            image: skillDescription.image,
           },
         });
       } else {
@@ -52,16 +91,19 @@ export const upsetSkillDescription = async (
 };
 
 export const upsertSkills = async (
-  removeIdsSkill: string[],
-  data: CreateSkillDTO[],
-  aboutMeId: string
+  aboutMeId: string,
+  data: {
+    removeIds: string[];
+    data: CreateSkillDTO[];
+  }
 ) => {
-  if (removeIdsSkill && removeIdsSkill.length > 0) {
+  console.log(data);
+  if (data.removeIds && data.removeIds.length > 0) {
     try {
       await prisma.skill.deleteMany({
         where: {
           id: {
-            in: removeIdsSkill,
+            in: data.removeIds,
           },
         },
       });
@@ -71,10 +113,11 @@ export const upsertSkills = async (
   }
 
   await Promise.all(
-    data.map(async (skill) => {
+    data.data.map(async (skill) => {
       let skillId = skill.id;
 
       if (skill.id) {
+        console.log("skill123", skill);
         const skillId = skill.id;
         await prisma.skill.update({
           where: {
@@ -85,6 +128,7 @@ export const upsertSkills = async (
           },
         });
       } else {
+        console.log("skill321", skill);
         const newSkill = await prisma.skill.create({
           data: {
             ...omit(skill, ["skillDescription", "id", "removeIdSkillDesc"]),
@@ -96,8 +140,19 @@ export const upsertSkills = async (
       }
 
       if (skill.skillDescription && skillId) {
-        await upsetSkillDescription(skill.skillDescription, skillId);
+        await upsetSkillDescription(
+          skill.skillDescription,
+          skillId,
+          skill.removeIdSkillDesc || []
+        );
       }
     })
   );
+
+  const newSkill = await getSkillsByIdAboutMe(aboutMeId);
+
+  return {
+    data: newSkill,
+    status: 200,
+  };
 };

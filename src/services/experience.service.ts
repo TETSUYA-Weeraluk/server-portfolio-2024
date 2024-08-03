@@ -41,8 +41,8 @@ export const getExperienceByAboutMeId = async (aboutMeId: string) => {
   } catch (error) {
     console.log("error", error);
     return {
-      status: 400,
-      message: error,
+      message: "Internal Server Error",
+      status: 500,
     };
   }
 };

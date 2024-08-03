@@ -5,6 +5,7 @@ import aboutMeRoute from "./aboutMe.route";
 import personalRoute from "./personal.route";
 import educationRoute from "./education.route";
 import experienceRoute from "./experience.route";
+import skillRoute from "./skill.route";
 
 const router = Router();
 
@@ -32,6 +33,10 @@ const listRoute = [
   {
     path: "/experience",
     route: experienceRoute,
+  },
+  {
+    path: "/skill",
+    route: skillRoute,
   },
 ];
 

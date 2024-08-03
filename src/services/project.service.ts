@@ -30,6 +30,10 @@ export const upsertProject = async (
       });
     } catch (error) {
       console.log("error", error);
+      return {
+        message: "Internal Server Error",
+        status: 500,
+      };
     }
   }
 

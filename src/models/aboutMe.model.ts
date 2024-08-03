@@ -65,6 +65,11 @@ export const createSkillDTO = z.object({
   order: z.number(),
 });
 
+export const updateSkillDTO = z.object({
+  data: z.array(createSkillDTO),
+  removeIds: z.array(z.string()),
+});
+
 export const createProjectDTO = z.object({
   id: z.string().nullable(),
   title: z.string().min(3).max(255),
