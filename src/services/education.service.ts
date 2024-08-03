@@ -52,8 +52,6 @@ export const upsertEducation = async (
           },
         },
       });
-
-      console.log("result", result);
     } catch (error) {
       console.log("error", error);
     }

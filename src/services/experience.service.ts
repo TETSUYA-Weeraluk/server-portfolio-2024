@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { omit } from "lodash";
 import {
-  createExperienceDescriptionDTO,
+  CreateExperienceDescriptionDTO,
   CreateExperienceDTO,
 } from "../models/aboutMe.model";
 
@@ -13,14 +13,43 @@ export const selectExperience: Prisma.ExperienceSelect = {
   startDate: true,
   endDate: true,
   position: true,
-  experienceDescription: true,
+  experienceDescription: {
+    select: {
+      id: true,
+      description: true,
+    },
+  },
   order: true,
 };
 
+export const getExperienceByAboutMeId = async (aboutMeId: string) => {
+  try {
+    const experience = await prisma.experience.findMany({
+      where: {
+        aboutMeId: aboutMeId,
+      },
+      select: selectExperience,
+      orderBy: {
+        order: "asc",
+      },
+    });
+
+    return {
+      status: 200,
+      data: experience,
+    };
+  } catch (error) {
+    console.log("error", error);
+    return {
+      status: 400,
+      message: error,
+    };
+  }
+};
 
 export const upsertExperienceDescription = async (
   experienceId: string,
-  experienceDescriptions: createExperienceDescriptionDTO[],
+  experienceDescriptions: CreateExperienceDescriptionDTO[],
   removeIds: string[]
 ) => {
   if (removeIds.length > 0) {
@@ -69,15 +98,17 @@ export const upsertExperienceDescription = async (
 
 export const upsertExperience = async (
   aboutMeId: string,
-  experiences: CreateExperienceDTO[],
-  removeIds: string[]
+  data: {
+    exp: CreateExperienceDTO[];
+    removeIdsExperience: string[];
+  }
 ) => {
-  if (removeIds.length > 0) {
+  if (data.removeIdsExperience.length > 0) {
     try {
       await prisma.experience.deleteMany({
         where: {
           id: {
-            in: removeIds,
+            in: data.removeIdsExperience,
           },
         },
       });
@@ -87,7 +118,7 @@ export const upsertExperience = async (
   }
 
   await Promise.all(
-    experiences.map(async (experience) => {
+    data.exp.map(async (experience) => {
       if (experience.removeIdExpDesc && experience.removeIdExpDesc.length > 0) {
         try {
           await prisma.experienceDescription.deleteMany({
@@ -109,7 +140,12 @@ export const upsertExperience = async (
           await prisma.experience.update({
             where: { id: experienceId },
             data: {
-              ...omit(experience, "experienceDescription", "removeIdExpDesc"),
+              ...omit(
+                experience,
+                "experienceDescription",
+                "removeIdExpDesc",
+                "id"
+              ),
               startDate: new Date(experience.startDate),
               endDate: new Date(experience.endDate),
               updatedAt: new Date(),
@@ -148,4 +184,6 @@ export const upsertExperience = async (
       }
     })
   );
+
+  return await getExperienceByAboutMeId(aboutMeId);
 };

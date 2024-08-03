@@ -53,8 +53,6 @@ export const upsertPersonalInfo = async (
           },
         },
       });
-
-      console.log("result", result);
     } catch (error) {
       console.log("error", error);
     }

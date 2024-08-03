@@ -5,8 +5,6 @@ export const updateEducationOrCreate = async (req: Request, res: Response) => {
   const id = req.params.idAboutMe;
   const data = req.body;
 
-  console.log(data);
-
   if (data) {
     const education = await educationService.upsertEducation(id, data);
 
