@@ -10,6 +10,8 @@ export const validate =
       if (e instanceof ZodError) {
         const errorMessages: { [key: string]: string } = {};
 
+        console.log(e);
+
         e.errors.forEach((err) => {
           const path: string = err.path[0] as string;
           errorMessages[path] = err.message;

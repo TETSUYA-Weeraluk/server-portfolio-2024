@@ -14,17 +14,44 @@ export const selectProject: Prisma.ProjectSelect = {
   order: true,
 };
 
+export const getProjectByIdAboutMe = async (idAboutMe: string) => {
+  try {
+    const project = await prisma.project.findMany({
+      where: {
+        aboutMeId: idAboutMe,
+      },
+      select: selectProject,
+      orderBy: {
+        order: "asc",
+      },
+    });
+
+    return {
+      data: project,
+      status: 200,
+    };
+  } catch (error) {
+    console.log("error", error);
+    return {
+      message: "Internal Server Error",
+      status: 500,
+    };
+  }
+};
+
 export const upsertProject = async (
   aboutMeId: string,
-  data: CreateProjectDTO[],
-  removeIds: string[]
+  data: {
+    data: CreateProjectDTO[];
+    removeIds: string[];
+  }
 ) => {
-  if (removeIds && removeIds.length > 0) {
+  if (data.removeIds && data.removeIds.length > 0) {
     try {
       await prisma.project.deleteMany({
         where: {
           id: {
-            in: removeIds,
+            in: data.removeIds,
           },
         },
       });
@@ -38,7 +65,7 @@ export const upsertProject = async (
   }
 
   await Promise.all(
-    data.map(async (project) => {
+    data.data.map(async (project) => {
       if (project.id) {
         try {
           await prisma.project.update({
@@ -46,7 +73,7 @@ export const upsertProject = async (
               id: project.id,
             },
             data: {
-              ...project,
+              ...omit(project, "id"),
             },
           });
         } catch (error) {
@@ -67,4 +94,8 @@ export const upsertProject = async (
       }
     })
   );
+
+  const getProject = await getProjectByIdAboutMe(aboutMeId);
+
+  return getProject;
 };

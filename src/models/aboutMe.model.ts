@@ -80,6 +80,11 @@ export const createProjectDTO = z.object({
   order: z.number(),
 });
 
+export const updateProjectDTO = z.object({
+  data: z.array(createProjectDTO),
+  removeIds: z.array(z.string()),
+});
+
 export const createAboutMeDto = z.object({
   name: z.string().min(3).max(255),
   nickname: z.string().min(3).max(255),
@@ -137,3 +142,4 @@ export type CreateExperienceDescriptionDTO = z.infer<
 export type UpdatePersonalDTO = z.infer<typeof updatePersonalInfoDTO>;
 export type UpdateEducationDTO = z.infer<typeof updateEducationDTO>;
 export type UpdateExperienceDTO = z.infer<typeof updateExperienceDTO>;
+export type UpdateProjectDTO = z.infer<typeof updateProjectDTO>;
