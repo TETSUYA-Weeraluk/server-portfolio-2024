@@ -117,10 +117,10 @@ export const updateAboutMeDTO = z.object({
 
 export const updateMainContentDTO = z.object({
   id: z.string(),
-  name: z.string().min(3).max(255),
-  nickname: z.string().min(3).max(255),
+  name: z.string().max(255),
+  nickname: z.string().max(255),
   position: z.string().min(3).max(255),
-  welcomeText: z.string().min(3),
+  welcomeText: z.string(),
   image: z.string().nullable(),
 });
 
